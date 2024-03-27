@@ -8,6 +8,8 @@ import lombok.Data;
 public class MemberDTO {
 	
 	private String memberId;
+	private long roleId;
+	private long gradeId;
 	private String password;
 	private String name;
 	private String email;
@@ -16,10 +18,11 @@ public class MemberDTO {
 	private String roadAddress;
 	private String jibunAddress;
 	private String namujiAddress;
-	private String roleGbn;
-	private Date createDate;
-	private Date updateDate;
+	private String personalInformationYn;
 	private Date ActiveModDate;
 	private Date activeYn;
+	private Date createDate;
+	private Date updateDate;
+	
 	
 }
