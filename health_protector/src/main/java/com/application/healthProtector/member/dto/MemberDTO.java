@@ -19,8 +19,8 @@ public class MemberDTO {
 	private String jibunAddress;
 	private String namujiAddress;
 	private String personalInformationYn;
+	private String activeYn;
 	private Date ActiveModDate;
-	private Date activeYn;
 	private Date createDate;
 	private Date updateDate;
 	

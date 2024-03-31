@@ -11,4 +11,6 @@ public interface MemberDAO {
 
 	public String selectDuplicatedId(String memberId);
 
+	public MemberDTO login(String memberId);
+
 }

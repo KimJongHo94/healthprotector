@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상품 등록</title>
+</head>
+<body>
+    <h2>상품 등록 폼</h2>
+    <form action="/submitProduct" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="brandId">브랜드:</label>
+            <select id="brandId" name="brandId">
+                <!-- 서버에서 브랜드 목록을 가져와 여기에 <option> 태그로 추가 -->
+                <option value="1">브랜드 A</option>
+                <option value="2">브랜드 B</option>
+            </select>
+        </div>
+        <div>
+				    <label for="categoryId">카테고리:</label>
+				    <select id="categoryId" name="categoryId" onchange="updateCategoryDetails(this.value)">
+				        <option value="1">카테고리 X</option>
+				        <option value="2">카테고리 Y</option>
+				    </select>
+				</div>
+				<div>
+				    <label for="categoryDetailId">세부 카테고리:</label>
+				    <select id="categoryDetailId" name="categoryDetailId">
+				        <!-- JavaScript를 통해 동적으로 옵션을 채울 예정 -->
+				        <option value="1">카테고리 X</option>
+				        <option value="2">카테고리 Y</option>
+				    </select>
+				</div>
+        <div>
+            <label for="productName">상품 이름:</label>
+            <input type="text" id="productName" name="productName" maxlength="200">
+        </div>
+        <div>
+            <label for="description">설명:</label>
+            <textarea id="description" name="description" maxlength="255"></textarea>
+        </div>
+        <div>
+            <label for="price">가격:</label>
+            <input type="number" id="price" name="price">
+        </div>
+        <div>
+            <label for="stock">재고:</label>
+            <input type="number" id="stock" name="stock">
+        </div>
+        <div>
+            <label for="picture">상품 이미지:</label>
+            <input type="file" id="picture" name="picture">
+        </div>
+        <div>
+            <button type="submit">등록</button>
+        </div>
+    </form>
+</body>
+</html>

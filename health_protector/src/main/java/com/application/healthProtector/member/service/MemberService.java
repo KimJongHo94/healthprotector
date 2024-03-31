@@ -8,4 +8,6 @@ public interface MemberService {
 
 	public String checkDuplicatedId(String memberId);
 
+	public boolean login(MemberDTO memberDTO);
+
 }

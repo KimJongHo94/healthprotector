@@ -6,6 +6,8 @@
 		INSERT INTO MEMBER
 	(
 		MEMBER_ID,
+		ROLE_ID,
+		GRADE_ID,
 		PASSWORD,
 		NAME,
 		EMAIL,
@@ -13,11 +15,14 @@
 		ZIP_CODE,
 		ROAD_ADDRESS,
 		JIBUN_ADDRESS,
-		NAMUJI_ADDRESS
+		NAMUJI_ADDRESS,
+		PERSONAL_INFORMATION_YN
 	)
 	VALUES
 	(
 		#{memberId},
+		1,
+		1,
 		#{password},
 		#{name},
 		#{email},
@@ -25,12 +30,20 @@
 		#{zipcode},
 		#{roadAddress},
 		#{jibunAddress},
-		#{namujiAddress}
+		#{namujiAddress},
+		#{personalInformationYn}
 	)
 	</insert>
 	
 	<select id="selectDuplicatedId" parameterType="String" resultType="String">
 		SELECT MEMBER_ID
+		  FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="login" parameterType="String" resultType="MemberDTO">
+		SELECT PASSWORD,
+		       ACTIVE_YN
 		  FROM MEMBER
 		 WHERE MEMBER_ID = #{memberId}
 	</select>
