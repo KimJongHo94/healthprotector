@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.application.healthProtector.customerService.dao.CustomerServiceBoardDAO">
+	<select id="getBoardList" resultType="CustomerServiceBoardDTO">
+		SELECT *
+		  FROM CUSTOMER_SERVICE
+		 WHERE DELETE_DATE IS NULL
+	</select>
+	
+	<insert id="createBoard" parameterType="CustomerServiceBoardDTO">
+		INSERT INTO CUSTOMER_SERVICE
+		(
+		  MEMBER_ID,
+		  SUBJECT,
+		  CONTENT,
+		  STATUS,
+		  CREATE_DATE 
+		)
+		VALUES
+		(
+			#{memberId},
+			#{subject},
+			#{content},
+			"0",
+			NOW()
+		)
+	</insert>
+	
+	<select id="getBoardDetail" parameterType="int" resultType="CustomerServiceBoardDTO">
+		SELECT *
+		  FROM CUSTOMER_SERVICE
+		 WHERE SERVICE_ID = #{serviceId}
+	</select>
+	
+	<update id="updateBoard" parameterType="CustomerServiceBoardDTO">
+		UPDATE CUSTOMER_SERVICE
+		   SET SUBJECT = #{subject},
+		       CONTENT = #{content},
+		       UPDATE_DATE = NOW()
+		 WHERE SERVICE_ID = #{serviceId}
+	</update>
+	
+	<update id="deleteBoard" parameterType="int">
+		UPDATE CUSTOMER_SERVICE
+		   SET DELETE_DATE = NOW()
+		 WHERE SERVICE_ID = #{serviceId}
+	</update>
+	
+	<insert id="createComment" parameterType="customerServiceCommentDTO">
+		INSERT INTO CUSTOMER_SERVICE_COMMENT
+		(
+			SERVICE_ID,
+			MEMBER_ID,
+			CONTENT,
+			CREATE_DATE
+		)
+		VALUES
+		(
+			#{serviceId},
+			#{memberId},
+			#{content},
+			NOW()
+		)
+	</insert>
+	
+	<select id="getCommentList" parameterType="int" resultType="customerServiceCommentDTO">
+		SELECT *
+		  FROM CUSTOMER_SERVICE_COMMENT
+		 WHERE SERVICE_ID = #{serviceId}
+		   AND DELETE_DATE IS NULL
+	</select>
+	
+	<select id="getServiceIdByCommentId" parameterType="int" resultType="int">
+		SELECT SERVICE_ID
+		  FROM CUSTOMER_SERVICE_COMMENT
+		 WHERE SERVICE_COMMENT_ID = #{serviceCommentId}
+	</select>
+	
+	<update id="deleteComment" parameterType="int">
+		UPDATE CUSTOMER_SERVICE_COMMENT
+		   SET DELETE_DATE = NOW()
+		 WHERE SERVICE_COMMENT_ID = #{serviceCommentId}
+	</update>
+	
+	<update id="updateComment" parameterType="customerServiceCommentDTO">
+		UPDATE CUSTOMER_SERVICE_COMMENT
+		   SET CONTENT = #{content},
+		       UPDATE_DATE = NOW()
+		 WHERE SERVICE_COMMENT_ID = #{serviceCommentId}
+	</update>
+</mapper>

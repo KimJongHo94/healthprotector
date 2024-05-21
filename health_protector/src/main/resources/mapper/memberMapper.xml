@@ -21,7 +21,7 @@
 	VALUES
 	(
 		#{memberId},
-		1,
+		2, 
 		1,
 		#{password},
 		#{name},
@@ -46,5 +46,6 @@
 		       ACTIVE_YN
 		  FROM MEMBER
 		 WHERE MEMBER_ID = #{memberId}
+		   AND ACTIVE_YN = "y"
 	</select>
 </mapper>

@@ -8,7 +8,7 @@ import lombok.Data;
 public class BrandDTO {
 	
 	private int brandId;
-	private int brandName;
+	private String brandName;
 	private String description;
 	private Date createDate;
 	private Date updateDate;

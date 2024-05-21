@@ -23,10 +23,6 @@ public class MemberController {
 	@Autowired
 	private MemberService memberService;
 	
-	@GetMapping("/index")
-	public String index() {
-		return "member/index";
-	}
 	
 	@GetMapping("/registerMember")
 	public String registerMember() {
@@ -38,7 +34,7 @@ public class MemberController {
 		
 		memberService.createMember(memberDTO);
 		
-		return "redirect:registerMember";
+		return "redirect:/";
 	}
 	
 	@PostMapping("/validId")
@@ -85,6 +81,6 @@ public class MemberController {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		
-		return "member/login";
+		return "redirect:/";
 	}
 }

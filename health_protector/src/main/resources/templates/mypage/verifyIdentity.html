@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{/layout/layout.html}">
+<head>
+<meta charset="UTF-8">
+<title>비밀번호 확인</title>
+<style>
+    .auth-form-container {
+        max-width: 400px;
+        margin: auto; 
+        padding-top: 50px; 
+    }
+</style>
+<script th:src="@{/js/jquery-3.6.1.min.js}"></script>
+<script>
+
+	$(function(){
+		
+		let menuValue = $("input[name='menu']").val();
+		
+		$("#confirmBtn").click(function(){
+			
+			let validData = {
+				"password" : $("[name='password']").val()
+			}
+			
+			$.ajax({
+				url : "/mypage/verifyIdentity",
+				type : "post",
+				contentType: "application/json",
+				data : JSON.stringify(validData),
+				success : function(isValidPw) {
+					
+					if (isValidPw == "y" && menuValue == "update") {
+						location.href = "/mypage/updateMember";
+					}
+					else if (isValidPw == "y" && menuValue == "delete") {
+						location.href = "/mypage/deleteMember";
+					}
+					else {
+						$("#failMsg").html("<span style='color:red;'>패스워드를 확인하세요.</span>");
+					}
+					
+				}
+				
+				
+			});
+			
+		});
+		
+	});
+
+</script>
+</head>
+<body>
+	<div layout:fragment="container">
+		 <div class="auth-form-container">
+      <h2>회원 인증</h2>
+       <div class="form-group">
+           <label for="password">회원정보 수정</label>
+           <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+       		 <span id="failMsg"></span>
+       </div>
+       <div class="text-right mt-3">
+       	<input type="hidden" name="menu" th:value="${menu}">
+       	<button type="submit" id="confirmBtn" class="btn btn-primary">인증</button>
+       </div>
+     </div>
+	</div>
+</body>
+</html>

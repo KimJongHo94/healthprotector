@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.application.healthProtector.order.dao.OrderDAO">
+
+	<select id="getOrderMemberInfo" parameterType="String" resultType="MemberDTO">
+		SELECT NAME,
+		       PHONE_NUMBER,
+		       EMAIL,
+		       ZIP_CODE,
+		       ROAD_ADDRESS,
+		       JIBUN_ADDRESS,
+		       NAMUJI_ADDRESS
+		  FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<resultMap type="hashmap" id="OrderInfoMap">
+		<result property="cartId" column="CART_ID" />
+		<result property="productId" column="PRODUCT_ID" />
+		<result property="productName" column="PRODUCT_NAME" />
+		<result property="price" column="PRICE" />
+		<result property="quantity" column="QUANTITY" />
+	</resultMap>
+	
+	<select id="getOrderInfo" parameterType="String" resultMap="OrderInfoMap">
+		SELECT c.CART_ID,
+		       c.PRODUCT_ID,
+		       p.PRODUCT_NAME,
+		       p.PRICE,
+		    	 c.QUANTITY 
+		  FROM CART c
+		  JOIN PRODUCT p ON c.PRODUCT_ID = p.PRODUCT_ID 
+		 WHERE c.MEMBER_ID = #{memberId}
+		   AND c.STATUS = "IN_CART"
+	</select>
+	
+	<insert id="saveOrder" parameterType="OrderDTO" useGeneratedKeys="true" keyProperty="orderId">
+		INSERT INTO PURCHASE_ORDER
+		(
+			MEMBER_ID,
+			TOTAL_PRICE,
+			ZIP_CODE,
+			ROAD_ADDRESS,
+			JIBUN_ADDRESS,
+			NAMUJI_ADDRESS,
+			ORDER_STATUS,
+			PAYMENT_METHOD,
+			CUSTOMER_NOTE
+		)
+		VALUES
+		(
+			#{memberId},
+			#{totalPrice},
+			#{zipcode},
+			#{roadAddress},
+			#{jibunAddress},
+			#{namujiAddress},
+			"DONE",
+			#{paymentMethod},
+			#{customerNote}
+		)
+	</insert>
+	
+	<insert id="saveOrderDetail" parameterType="OrderDetailDTO">
+		INSERT INTO ORDER_DETAIL
+		(
+			ORDER_ID,
+			PRODUCT_ID,
+			QUANTITY,
+			PRICE
+		)
+		VALUES
+		(
+			#{orderId},
+			#{productId},
+			#{quantity},
+			#{price}
+		)
+	</insert>
+	
+	<update id="calculateStock" parameterType="OrderDetailDTO">
+		UPDATE PRODUCT
+		   SET STOCK = STOCK - #{quantity},
+		       UPDATE_DATE = NOW()
+		 WHERE PRODUCT_ID = #{productId}
+	</update>
+	
+	<update id="orderedCart" parameterType="String">
+		UPDATE CART
+		   SET STATUS = "ORDERED",
+		       UPDATE_DATE = NOW()
+		 WHERE MEMBER_ID = #{memberId}
+		   AND STATUS = "IN_CART"
+	</update>
+</mapper>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.healthProtector.cart.dao.CartDAO">
+
+	<insert id="addCart" parameterType="CartDTO">
+		INSERT INTO CART
+		(
+			MEMBER_ID,
+			PRODUCT_ID,
+			QUANTITY,
+			STATUS
+		)
+		VALUES
+		(
+			#{memberId},
+			#{productId},
+			#{quantity},
+			"IN_CART"
+		)
+	</insert>
+	
+	<resultMap type="hashmap" id="CartListMap">
+		<result property="cartId" column="CART_ID" />
+		<result property="productId" column="PRODUCT_ID" />		
+		<result property="productName" column="PRODUCT_NAME" />		
+		<result property="pictureOriginal" column="PICTURE_ORIGINAL" />		
+		<result property="pictureUUID" column="PICTURE_UUID" />		
+		<result property="quantity" column="QUANTITY" />		
+		<result property="status" column="STATUS" />		
+		<result property="price" column="PRICE" />		
+	</resultMap>
+	
+	<select id="getCartListByMemberId" parameterType="String" resultMap="CartListMap">
+		SELECT c.CART_ID,
+		       c.PRODUCT_ID,
+		       p.PRODUCT_NAME,
+		       p.PICTURE_ORIGINAL,
+		       p.PICTURE_UUID,
+		       c.QUANTITY,
+		       c.STATUS,
+		       p.PRICE
+		  FROM CART c
+		  JOIN PRODUCT p ON c.PRODUCT_ID = p.PRODUCT_ID
+		 WHERE c.MEMBER_ID = #{memberId}
+		   AND p.DELETE_DATE IS NULL
+		   AND c.STATUS = "IN_CART"
+	ORDER BY c.CART_ID
+	</select>
+	
+	<update id="removeItem" parameterType="int">
+		UPDATE CART
+		   SET STATUS = "REMOVED",
+		       UPDATE_DATE = NOW(),
+		       DELETE_DATE = NOW()
+		 WHERE CART_ID = #{cartId}
+	</update>
+	
+	<select id="checkProduct" parameterType="CartDTO">
+		SELECT COUNT(*)
+	    FROM CART
+	   WHERE MEMBER_ID = #{memberId}
+	     AND PRODUCT_ID = #{productId}
+	     AND STATUS = 'IN_CART'
+	</select>
+</mapper>

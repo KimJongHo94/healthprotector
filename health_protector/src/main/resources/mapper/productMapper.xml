@@ -25,7 +25,130 @@
 			#{stock},
 			#{pictureOriginal},
 			#{pictureUUID},
-			NOW(),
+			NOW()
 		)
 	</insert>
+
+	<resultMap type="hashmap" id="ProductListResultMap">
+		<result property="brandName" column="BRAND_NAME" />
+		<result property="productId" column="PRODUCT_ID"/>
+    <result property="productName" column="PRODUCT_NAME"/>
+    <result property="description" column="DESCRIPTION"/>
+    <result property="price" column="PRICE"/>
+    <result property="stock" column="STOCK"/>
+    <result property="pictureOriginal" column="PICTURE_ORIGINAL"/>
+    <result property="pictureUUID" column="PICTURE_UUID"/>
+    <result property="createDate" column="CREATE_DATE"/>
+    <result property="categoryId" column="CATEGORY_ID"/>
+   	<result property="categoryName" column="CATEGORY_NAME"/>
+	</resultMap>
+	
+	<select id="selectProductList" resultMap="ProductListResultMap">
+		SELECT 
+						b.BRAND_NAME as BRAND_NAME,
+            p.PRODUCT_ID as PRODUCT_ID,
+            p.PRODUCT_NAME as PRODUCT_NAME,
+            p.DESCRIPTION as DESCRIPTION,
+            p.PRICE as PRICE,
+            p.STOCK as STOCK,
+            p.PICTURE_ORIGINAL as PICTURE_ORIGINAL,
+            p.PICTURE_UUID as PICTURE_UUID,
+            p.CREATE_DATE as CREATE_DATE,
+            c.CATEGORY_ID as CATEGORY_ID,
+            c.CATEGORY_NAME as CATEGORY_NAME
+        FROM 
+             PRODUCT p
+        JOIN BRAND b ON p.BRAND_ID = b.BRAND_ID 
+        JOIN CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID
+	</select>
+	
+	<select id="getProductDetail" parameterType="int" resultMap="ProductListResultMap">
+		SELECT 
+						b.BRAND_NAME as BRAND_NAME,
+            p.PRODUCT_ID as PRODUCT_ID,
+            p.PRODUCT_NAME as PRODUCT_NAME,
+            p.DESCRIPTION as DESCRIPTION,
+            p.PRICE as PRICE,
+            p.STOCK as STOCK,
+            p.PICTURE_ORIGINAL as PICTURE_ORIGINAL,
+            p.PICTURE_UUID as PICTURE_UUID,
+            p.CREATE_DATE as CREATE_DATE,
+            c.CATEGORY_ID as CATEGORY_ID,
+            c.CATEGORY_NAME as CATEGORY_NAME
+        FROM 
+             PRODUCT p
+        JOIN BRAND b ON p.BRAND_ID = b.BRAND_ID 
+        JOIN CATEGORY c ON p.CATEGORY_ID = c.CATEGORY_ID
+       WHERE p.PRODUCT_ID = #{productId}
+	</select>
+	
+	<!-- 상품 리뷰 댓글 -->
+	<insert id="createReview" parameterType="ReviewDTO">
+		INSERT INTO REVIEW
+		(
+			PRODUCT_ID,
+			MEMBER_ID,
+			RATING,
+			CONTENT,
+			PICTURE_ORIGINAL,
+			PICTURE_UUID,
+			CREATE_DATE
+		)
+		VALUES
+		(
+			#{productId},
+			#{memberId},
+			#{rating},
+			#{content},
+			#{pictureOriginal},
+			#{pictureUUID},
+			NOW()
+		)
+	</insert>
+	
+	<select id="getReviewList" parameterType="int" resultType="ReviewDTO">
+		SELECT *
+		  FROM REVIEW
+		 WHERE PRODUCT_ID = #{productId}
+		   AND DELETE_DATE IS NULL
+	</select>
+	
+	<select id="getProductIdByReviewId" parameterType="int" resultType="int">
+		SELECT PRODUCT_ID
+		  FROM REVIEW
+		 WHERE REVIEW_ID = #{reviewId}
+	</select>
+	
+	<update id="deleteReview" parameterType="int">
+		UPDATE REVIEW
+		   SET DELETE_DATE = NOW()
+		 WHERE REVIEW_ID = #{reviewId}
+	</update>
+	
+	<update id="updateReview" parameterType="ReviewDTO">
+		UPDATE REVIEW
+			<set>
+				<if test='rating != null and !rating.equals("")'>
+					RATING = #{rating},
+				</if>
+				<if test='content != null and !content.equals("")'>
+					CONTENT = #{content},
+				</if>
+				<if test='pictureOriginal != null and !pictureOriginal.equals("")'>
+					PICTURE_ORIGINAL = #{pictureOriginal},
+				</if>
+				<if test='pictureUUID != null and !pictureUUID.equals("")'>
+					PICTURE_UUID = #{pictureUUID},
+				</if>
+				UPDATE_DATE = NOW()
+			</set>
+		 WHERE REVIEW_ID = #{reviewId}
+	</update>
+	
+	<select id="getProductById" parameterType="int" resultType="ProductDTO">
+		SELECT *
+		  FROM PRODUCT
+		 WHERE PRODUCT_ID = #{productId}
+		   AND DELETE_DATE IS NULL
+	</select>
 </mapper>

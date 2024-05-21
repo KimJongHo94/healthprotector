@@ -1,59 +1,79 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>상품 등록</title>
 </head>
 <body>
-    <h2>상품 등록 폼</h2>
-    <form action="/submitProduct" method="post" enctype="multipart/form-data">
-        <div>
-            <label for="brandId">브랜드:</label>
-            <select id="brandId" name="brandId">
-                <!-- 서버에서 브랜드 목록을 가져와 여기에 <option> 태그로 추가 -->
-                <option value="1">브랜드 A</option>
-                <option value="2">브랜드 B</option>
-            </select>
-        </div>
-        <div>
-				    <label for="categoryId">카테고리:</label>
-				    <select id="categoryId" name="categoryId" onchange="updateCategoryDetails(this.value)">
-				        <option value="1">카테고리 X</option>
-				        <option value="2">카테고리 Y</option>
-				    </select>
-				</div>
-				<div>
-				    <label for="categoryDetailId">세부 카테고리:</label>
-				    <select id="categoryDetailId" name="categoryDetailId">
-				        <!-- JavaScript를 통해 동적으로 옵션을 채울 예정 -->
-				        <option value="1">카테고리 X</option>
-				        <option value="2">카테고리 Y</option>
-				    </select>
-				</div>
-        <div>
-            <label for="productName">상품 이름:</label>
-            <input type="text" id="productName" name="productName" maxlength="200">
-        </div>
-        <div>
-            <label for="description">설명:</label>
-            <textarea id="description" name="description" maxlength="255"></textarea>
-        </div>
-        <div>
-            <label for="price">가격:</label>
-            <input type="number" id="price" name="price">
-        </div>
-        <div>
-            <label for="stock">재고:</label>
-            <input type="number" id="stock" name="stock">
-        </div>
-        <div>
-            <label for="picture">상품 이미지:</label>
-            <input type="file" id="picture" name="picture">
-        </div>
-        <div>
-            <button type="submit">등록</button>
-        </div>
-    </form>
+<h2>상품 등록</h2>
+<form th:action="@{/product/registerProduct}" th:object="${product}" method="post" enctype="multipart/form-data">
+    <div>
+        <label for="brandId">브랜드:</label>
+        <select id="brandId" name="brandId">
+            <!-- 서버에서 브랜드 목록을 가져와 여기에 <option> 태그로 추가 -->
+            <!-- 테스트를 위한 몇 가지 옵션 -->
+            <option value="1">브랜드 A</option>
+            <option value="2">브랜드 B</option>
+        </select>
+    </div>
+    <div>
+        <label for="categoryId">카테고리:</label>
+        <select id="categoryId" name="categoryId" onchange="updateCategoryDetails()">
+            <!-- 카테고리 옵션은 서버에서 불러와서 추가 -->
+            <option value="1">비타민</option>
+            <option value="2">피부 관리</option>
+        </select>
+    </div>
+    <div>
+        <label for="categoryDetailId">세부 카테고리:</label>
+        <select id="categoryDetailId" name="categoryDetailId">
+            <!-- 세부 카테고리 옵션은 JavaScript를 통해 동적으로 채워짐 -->
+        </select>
+    </div>
+    <div>
+        <label for="productName">상품 이름:</label>
+        <input type="text" id="productName" name="productName" required>
+    </div>
+    <div>
+        <label for="description">설명:</label>
+        <textarea id="description" name="description"></textarea>
+    </div>
+    <div>
+        <label for="price">가격:</label>
+        <input type="number" id="price" name="price" required>
+    </div>
+    <div>
+        <label for="stock">재고:</label>
+        <input type="number" id="stock" name="stock" required>
+    </div>
+    <div>
+        <label for="uploadProduct">상품 이미지:</label>
+        <input type="file" id="uploadProduct" name="uploadProduct" required>
+    </div>
+    <div>
+        <button type="submit">상품 등록</button>
+    </div>
+</form>
+
+<script>
+function updateCategoryDetails() {
+    var categoryId = document.getElementById('categoryId').value;
+    var categoryDetailSelect = document.getElementById('categoryDetailId');
+    categoryDetailSelect.innerHTML = ''; // 기존 옵션 제거
+
+    // 카테고리 ID에 따라 세부 카테고리 옵션 동적 추가 (실제로는 서버에서 데이터를 가져와야 함)
+    if (categoryId == "1") {
+        var option1 = new Option("눈 비타민", "1");
+        var option2 = new Option("피부 비타민", "2");
+        categoryDetailSelect.add(option1);
+        categoryDetailSelect.add(option2);
+    } else if (categoryId == "2") {
+        var option1 = new Option("여드름 관리", "3");
+        var option2 = new Option("주름 개선", "4");
+        categoryDetailSelect.add(option1);
+        categoryDetailSelect.add(option2);
+    }
+}
+</script>
 </body>
 </html>

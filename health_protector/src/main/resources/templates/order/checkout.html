@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{/layout/layout.html}">
+<head>
+<title>주문하기</title>
+<meta charset="utf-8">
+<script src="/js/jquery-3.6.1.min.js"></script>
+<script th:src="@{http://dmaps.daum.net/map_js_init/postcode.v2.js}"></script>
+<script>
+	function execDaumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						var fullRoadAddr = data.roadAddress;
+						var extraRoadAddr = '';
+
+						if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+							extraRoadAddr += data.bname;
+						}
+
+						if (data.buildingName !== '' && data.apartment === 'Y') {
+							extraRoadAddr += (extraRoadAddr !== '' ? ', '
+									+ data.buildingName : data.buildingName);
+						}
+
+						if (extraRoadAddr !== '') {
+							extraRoadAddr = ' (' + extraRoadAddr + ')';
+						}
+
+						if (fullRoadAddr !== '') {
+							fullRoadAddr += extraRoadAddr;
+						}
+
+						document.getElementById('zipcode').value = data.zonecode;
+						document.getElementById('roadAddress').value = fullRoadAddr;
+						document.getElementById('jibunAddress').value = data.jibunAddress;
+
+					}
+				}).open();
+	}
+</script>
+</head>
+<body>
+	<div layout:fragment="container">
+		<div class="site-wrap">
+
+			<div class="bg-light py-3">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12 mb-0">
+							<a href="index.html">Home</a> <span class="mx-2 mb-0">/</span> <a
+								href="cart.html">Cart</a> <span class="mx-2 mb-0">/</span> <strong
+								class="text-black">Checkout</strong>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="site-section">
+				<form th:action="@{/order/submitOrder}" method="post">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6 mb-5 mb-md-0">
+							<h2 class="h3 mb-3 text-black">주문자 정보</h2>
+							<div class="p-3 p-lg-5 border">
+								<!-- 이름 입력 -->
+								<div class="form-group">
+									<label for="name">이름</label> 
+									<input type="text" class="form-control" id="name" name="name" th:value="${memberInfo.name}" placeholder="이름" required>
+								</div>
+								<!-- 핸드폰 번호 입력 -->
+								<div class="form-group">
+									<label for="phoneNumber">핸드폰 번호</label> 
+									<input type="text" class="form-control" id="phoneNumber" name="phoneNumber" th:value="${memberInfo.phoneNumber}"
+										placeholder="010-0000-0000" required>
+								</div>
+								<!-- 이메일 입력 -->
+								<div class="form-group">
+									<label for="email">이메일</label> 
+									<input type="email" class="form-control" id="email" name="email" th:value="${memberInfo.email}" required>
+								</div>
+
+								<!-- 주소 입력 -->
+								<div class="form-group">
+									<label for="zipcode">배송 주소</label>
+									<div class="input-group mb-2">
+										<input type="text" class="form-control" placeholder="우편번호 입력"
+											id="zipcode" name="zipcode" th:value="${memberInfo.zipcode}">
+										<div class="input-group-append">
+											<button type="button" class="btn btn-primary"
+												onclick="javascript:execDaumPostcode()">검색</button>
+										</div>
+									</div>
+									<input type="text" class="form-control mb-2"
+										placeholder="도로명 주소" name="roadAddress" id="roadAddress" th:value="${memberInfo.roadAddress}">
+									<input type="text" class="form-control mb-2"
+										placeholder="지번 주소" name="jibunAddress" id="jibunAddress" th:value="${memberInfo.jibunAddress}">
+									<input type="text" class="form-control" placeholder="나머지 주소"
+										name="namujiAddress" id="namujiAddress" th:value="${memberInfo.namujiAddress}">
+								</div>
+
+								<div class="form-group">
+									<label for="customerNote" class="text-black">배송 메모</label>
+									<textarea name="customerNote" id="customerNote" cols="30"
+										rows="5" class="form-control"
+										placeholder="배송 메모를 입력하세요."></textarea>
+								</div>
+
+							</div>
+						</div>
+						<div class="col-md-6">
+
+
+							<div class="row mb-5">
+								<div class="col-md-12">
+									<h2 class="h3 mb-3 text-black">주문 정보</h2>
+									<div class="p-3 p-lg-5 border">
+										
+										<div class="form-group">
+											<label for="paymentMethod">결제 방법</label><br>
+			                <input type="radio" id="paymentMethod" name="paymentMethod" value="payLater" checked>
+			                <label for="payLater">나중에 결제</label>
+				            </div>
+										
+										<table class="table site-block-order-table mb-5">
+											<thead>
+												<tr align="center">
+													<th>상품명</th>
+													<th>수량</th>
+													<th>가격</th>
+													<th>합계</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="item : ${cartItems}" align="center">
+					                <td th:text="${item.productName}"></td>
+					                <td th:text="${item.quantity}"></td>
+					                <td th:text="${#numbers.formatInteger(item.price, 3, 'COMMA')} + '원'"></td>
+					                <td th:text="${#numbers.formatInteger(item.price * item.quantity, 3, 'COMMA')} + '원'"></td>
+					            	</tr>
+											</tbody>
+											<tfoot>
+												<tr align="center">
+					                <th colspan="3">총금액</th>
+					                <td th:text="${#numbers.formatInteger(totalPrice, 3, 'COMMA')} + '원'"></td>
+						            </tr>
+											</tfoot>
+										</table>
+										<div class="form-group">
+											<input type="hidden" name="totalPrice" th:value="${totalPrice}">
+											<button type="submit" class="btn btn-primary btn-lg py-3 btn-block">주문하기</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

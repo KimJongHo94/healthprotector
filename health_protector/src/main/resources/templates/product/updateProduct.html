@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 수정</title>
+    <!-- 부트스트랩 CSS 추가 -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-3">
+    <h2>상품 수정</h2>
+    <form th:action="@{/product/updateProduct}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+        <div class="form-group">
+            <label for="productName">상품 이름</label>
+            <input type="text" id="productName" name="productName" th:value="${productDetail.productName}" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">설명</label>
+            <textarea id="description" name="description" class="form-control" th:text="${productDetail.description}" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="price">가격</label>
+            <input type="number" id="price" name="price" th:value="${productDetail.price}" class="form-control" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="stock">재고</label>
+            <input type="number" id="stock" name="stock" th:value="${productDetail.stock}" class="form-control" required>
+        </div>
+        
+        <!-- 이미지 및 기타 필드 추가 예정 -->
+
+        <button type="submit" class="btn btn-primary">상품 수정</button>
+    </form>
+</div>
+
+<!-- 부트스트랩 JS 및 의존성 스크립트 -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

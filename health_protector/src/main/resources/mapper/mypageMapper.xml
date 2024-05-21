@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.application.healthProtector.mypage.dao.MypageDAO">
+	
+	<resultMap type="hashmap" id="MemberInfoMap">
+		<result property="memberId" column="MEMBER_ID" />
+		<result property="password" column="PASSWORD" />
+		<result property="name" column="NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="zipcode" column="ZIP_CODE" />
+		<result property="roadAddress" column="ROAD_ADDRESS" />
+		<result property="jibunAddress" column="JIBUN_ADDRESS" />
+		<result property="namujiAddress" column="NAMUJI_ADDRESS" />
+		<result property="createDate" column="CREATE_DATE" />
+		<result property="gradeId" column="GRADE_ID" />
+		<result property="gradeName" column="GRADE_NAME" />
+		<result property="roleId" column="ROLE_ID" />
+		<result property="roleName" column="ROLE_ID" />
+		<result property="description" column="DESCRIPTION" />
+	</resultMap>
+	
+	<select id="getMemberInfo" resultMap="MemberInfoMap">
+		SELECT m.MEMBER_ID,
+		       m.PASSWORD,
+		       m.NAME,
+		       m.EMAIL,
+		       m.PHONE_NUMBER,
+		       m.ZIP_CODE,
+		       m.ROAD_ADDRESS,
+		       m.JIBUN_ADDRESS,
+		       m.NAMUJI_ADDRESS,
+		       m.CREATE_DATE,
+		       g.GRADE_ID,
+		       g.GRADE_NAME,
+		       r.ROLE_ID,
+		       r.ROLE_NAME,
+		       r.DESCRIPTION 
+		  FROM MEMBER m
+		  JOIN GRADE g ON m.GRADE_ID = g.GRADE_ID 
+		  JOIN ROLE r  ON m.ROLE_ID  = r.ROLE_ID 
+		 WHERE m.MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="getMemberPw" parameterType="String" resultType="String">
+		SELECT PASSWORD
+		  FROM MEMBER
+		 WHERE MEMBER_ID = #{memberId}
+	</select>
+	
+	<update id="updateMember" parameterType="MemberDTO">
+		UPDATE MEMBER
+			<set>
+				<if test='name != null and !name.equals("")'>
+					NAME = #{name},
+				</if>
+				<if test='password != null and !password.equals("")'>
+					PASSWORD = #{password},
+				</if>
+				<if test='email != null and !email.equals("")'>
+					EMAIL = #{email},
+				</if>
+				<if test='phoneNumber != null and !phoneNumber.equals("")'>
+					PHONE_NUMBER = #{phoneNumber},
+				</if>
+				<if test='zipcode != null and !zipcode.equals("")'>
+					ZIP_CODE = #{zipcode},
+				</if>
+				<if test='roadAddress != null and !roadAddress.equals("")'>
+					ROAD_ADDRESS = #{roadAddress},
+				</if>
+				<if test='jibunAddress != null and !jibunAddress.equals("")'>
+					JIBUN_ADDRESS = #{jibunAddress},
+				</if>
+				<if test='namujiAddress != null and !namujiAddress.equals("")'>
+					NAMUJI_ADDRESS = #{namujiAddress},
+				</if>
+				UPDATE_DATE = NOW()
+			</set>
+		 WHERE MEMBER_ID = #{memberId}
+	</update>
+	
+	<update id="deleteMember" parameterType="String">
+		UPDATE MEMBER
+		   SET ACTIVE_YN = "n",
+		       ACTIVE_MOD_DATE = NOW(),
+		       UPDATE_DATE = NOW()
+		 WHERE MEMBER_ID = #{memberId}
+	</update>
+</mapper>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-3">
+    <h2>Product List</h2>
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr align="center">
+            		<th>순번</th>
+                <th>상품번호</th>
+                <th>상품명</th>
+                <th>상품설명</th>
+                <th>가격</th>
+                <th>수량</th>
+                <th>브랜드명</th>
+                <th>카테고리명</th>
+                <!-- <th>세부카테고리명</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="product : ${productList}">
+					    <td th:text="${productStat.count}"></td>
+					    <td th:text="${product.productId}"></td>
+					    <td><a th:text="${product.productName}" th:href="@{/product/productDetail(productId=${product.productId})}"></a></td>
+					    <td th:text="${product.description}"></td>
+					    <td th:text="${product.price}"></td>
+					    <td th:text="${product.stock}"></td>
+					    <td th:text="${product.brandName}"></td>					    
+					    <td th:text="${product.categoryName}"></td>
+					    <!-- <td th:text="${product.categoryDetailName}"></td> -->
+					</tr>
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      layout:decorate="~{/layout/layout.html}">
+<head>
+<meta charset="UTF-8">
+<title>회원정보 수정</title>
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center; /* 가운데 정렬 */
+        align-items: center;
+        min-height: 100vh; /* 뷰포트의 높이에 맞춤 */
+    }
+    .form-signin {
+        width: 100%;
+        max-width: 400px; /* 최대 너비 설정 */
+        padding: 15px;
+        margin: auto;
+    }
+</style>
+<script src="/js/jquery-3.6.1.min.js"></script>
+<script th:src="@{http://dmaps.daum.net/map_js_init/postcode.v2.js}"></script>
+<script>
+	function execDaumPostcode() {
+		new daum.Postcode(
+				{
+					oncomplete : function(data) {
+						var fullRoadAddr = data.roadAddress;
+						var extraRoadAddr = '';
+
+						if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+							extraRoadAddr += data.bname;
+						}
+
+						if (data.buildingName !== '' && data.apartment === 'Y') {
+							extraRoadAddr += (extraRoadAddr !== '' ? ', '
+									+ data.buildingName : data.buildingName);
+						}
+
+						if (extraRoadAddr !== '') {
+							extraRoadAddr = ' (' + extraRoadAddr + ')';
+						}
+
+						if (fullRoadAddr !== '') {
+							fullRoadAddr += extraRoadAddr;
+						}
+
+						document.getElementById('zipcode').value = data.zonecode;
+						document.getElementById('roadAddress').value = fullRoadAddr;
+						document.getElementById('jibunAddress').value = data.jibunAddress;
+
+					}
+				}).open();
+	}
+</script>
+</head>
+<body>
+	<div layout:fragment="container">
+    <div class="form-container">
+     <div class="form-signin">
+      <h2 class="mb-3">회원정보 수정</h2>
+      <form th:action="@{/mypage/updateMember}" method="post">
+      	<div class="form-group">
+      		<label for="memberId">아이디</label>
+      		<input type="text" class="form-control" id="memberId" name="memberId" th:value="${memberDTO.memberId}" readonly>
+      	</div>
+        <!-- 비밀번호 입력 -->
+				<div class="form-group">
+					<label for="passwd">비밀번호</label> 
+					<input type="password"class="form-control" id="password" name="password" th:value="${memberDTO.password}" placeholder="비밀번호" required>
+				</div>
+				
+				<!-- 이름 입력 -->
+				<div class="form-group">
+					<label for="name">이름</label> 
+					<input type="text" class="form-control" name="name" th:value="${memberDTO.name}" placeholder="이름" required>
+				</div>
+				<!-- 핸드폰 번호 입력 -->
+				<div class="form-group">
+					<label for="phoneNumber">핸드폰 번호</label> 
+					<input type="text" class="form-control" name="phoneNumber" th:value="${memberDTO.phoneNumber}" placeholder="010-0000-0000" required>
+				</div>
+				<!-- 이메일 입력 -->
+				<div class="form-group">
+					<label for="email">이메일</label> 
+					<input type="email" class="form-control" name="email" th:value="${memberDTO.email}" required>
+				</div>
+	
+				<!-- 주소 입력 -->
+				<div class="form-group">
+					<label for="zipcode">주소</label>
+					<div class="input-group mb-2">
+						<input type="text" class="form-control" placeholder="우편번호 입력"
+							id="zipcode" name="zipcode" th:value="${memberDTO.zipcode}">
+						<div class="input-group-append">
+							<button type="button" class="btn btn-primary"
+								onclick="javascript:execDaumPostcode()">검색</button>
+						</div>
+					</div>
+					<input type="text" class="form-control mb-2"
+						placeholder="도로명 주소" name="roadAddress" id="roadAddress" th:value="${memberDTO.roadAddress}">
+					<input type="text" class="form-control mb-2" placeholder="지번 주소"
+						name="jibunAddress" id="jibunAddress"> 
+						<input type="text" class="form-control" placeholder="나머지 주소"
+						name="namujiAddress" id="namujiAddress" th:value="${memberDTO.namujiAddress}">
+				</div>
+				
+        <div class="text-right mt-3">
+        	<button type="submit" class="btn btn-primary">저장</button>
+    		</div>
+      </form>
+     </div>
+    </div>
+	</div>
+</body>
+</html>
